@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.bhaveshp750.mynotification.ui.theme.MyNotificationTheme
+import com.bhaveshp750.mynotification.allstyles.MainActivity
 
 private const val NOTIFICATION_ID = 12
 
@@ -70,6 +71,11 @@ class MainActivity : ComponentActivity() {
                        verticalArrangement = Arrangement.Center,
                        horizontalAlignment = Alignment.CenterHorizontally
                    ) {
+                       Button(onClick = {
+                           startActivity(Intent(context, MainActivity::class.java))
+                       }) {
+                           Text(text = "All Style Notification")
+                       }
                        Button(onClick = {
                            notificationManagerCompat.notify(NOTIFICATION_ID, notification)
                        }) {

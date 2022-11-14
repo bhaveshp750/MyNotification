@@ -30,6 +30,7 @@ class CounterNotificationService(private val context: Context) {
             .setContentTitle("Hello World")
             .setContentText("The counter is $counter")
             .setContentIntent(pendingIntent)
+            .setOnlyAlertOnce(true)
             .addAction(
                 R.drawable.ic_assistant,
                 "Increment",
