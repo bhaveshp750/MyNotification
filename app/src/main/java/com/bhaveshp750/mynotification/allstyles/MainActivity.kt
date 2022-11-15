@@ -77,6 +77,10 @@ fun MyAppAllStyle() {
         AddButton("Notify Media Style") {
             myService.notifyMediaStyle()
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Messaging Style") {
+            myService.notifyMessagingStyle()
+        }
     }
 }
 
