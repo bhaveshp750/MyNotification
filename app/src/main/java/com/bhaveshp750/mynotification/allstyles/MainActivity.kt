@@ -69,6 +69,14 @@ fun MyAppAllStyle() {
         AddButton("Notify Inbox Style") {
             myService.notifyInboxStyle(inputValue1, inputValue2)
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Big Picture Style") {
+            myService.notifyBigPictureStyle(inputValue1, inputValue2)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Media Style") {
+            myService.notifyMediaStyle()
+        }
     }
 }
 

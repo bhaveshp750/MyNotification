@@ -4,7 +4,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.MediaMetadata
 import android.os.Build
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bhaveshp750.mynotification.CHANNEL_1_ID
@@ -132,4 +135,68 @@ class MyNotificationService(private val context: Context) {
 
         notificationManager.notify(4, notification.build())
     }
+
+    fun notifyBigPictureStyle(title: String, message: String){
+        val activityIntent = Intent(context, MainActivity::class.java)
+        val contentIntent = PendingIntent.getActivity(
+            context,
+            0,
+            activityIntent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val picture = BitmapFactory.decodeResource(context.resources, R.drawable.swami_17)
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_1_ID)
+            .setSmallIcon(R.drawable.ic_one)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setLargeIcon(picture)
+            .setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(picture)
+                    .bigLargeIcon(null)
+            )
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setContentIntent(contentIntent)
+            .build()
+
+        notificationManager.notify(7, notification)
+    }
+
+    fun notifyMediaStyle(title: String = "Track 1", message: String = "Song content..") {
+        val mediaSessionCompat  = MediaSessionCompat(context, "MediaNotification")
+        mediaSessionCompat.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, "Song Title")
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, "Artist Dadabhagwan")
+                .build()
+        )
+
+        val largeIcon = BitmapFactory.decodeResource(context.resources, R.drawable.dada_niruma_pujyashree)
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setLargeIcon(largeIcon)
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0,1,2)
+                    .setMediaSession(mediaSessionCompat.sessionToken)
+            )
+            .setSubText("Sub Text")
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+            .addAction(R.drawable.ic_previous, "Previous", null)
+            .addAction(R.drawable.ic_pause, "Pause", null)
+            .addAction(R.drawable.ic_next, "Next", null)
+            .addAction(R.drawable.ic_star_outline, "Favorite", null)
+
+        notificationManager.notify(9, notification.build())
+    }
+
 }
