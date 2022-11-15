@@ -288,7 +288,7 @@ class MyNotificationService(private val context: Context) {
             delay(2000)
             for (i in 0..9){
                 notification.setProgress(progressMax, i*10, false)
-                notificationManager.notify(2, notification.build())
+                notificationManager.notify(12, notification.build())
                 delay(1000)
             }
 
@@ -296,9 +296,74 @@ class MyNotificationService(private val context: Context) {
                 .setOngoing(false)
                 .setProgress(0, 0, false)
 
-            notificationManager.notify(2, notification.build())
+            notificationManager.notify(12, notification.build())
         }
 
+    }
+
+    fun notifyNotificationGroups() {
+        val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle("Title")
+            .setContentText("Message 0")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+
+        notificationManager.notify(13, notification.build())
+
+        GlobalScope.launch {
+            delay(1000)
+            for (i in 1..10){
+                notification.setContentText("Message $i")
+                notificationManager.notify(13+i, notification.build())
+                delay(1000)
+            }
+        }
+    }
+
+    fun notifyNotificationManualGrouping() {
+        val title1 = "Title 1"
+        val message1 = "Message 1"
+        val title2 = "Title 2"
+        val message2 = "Message 2"
+
+        val notification1 = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle(title1)
+            .setContentText(message1)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup("example_group")
+            .build()
+
+        val notification2 = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle(title2)
+            .setContentText(message2)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup("example_group")
+            .build()
+
+        val summaryNotification = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setStyle(
+                NotificationCompat.InboxStyle()
+                    .addLine("$title1 $message1")
+                    .addLine("$title2 $message2")
+                    .setBigContentTitle("2 new messages")
+                    .setSummaryText("user@mail.com")
+            )
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup("example_group")
+            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+            .setGroupSummary(true)
+            .build()
+        GlobalScope.launch {
+            delay(1000)
+            notificationManager.notify(24, notification1)
+            delay(1000)
+            notificationManager.notify(25, notification2)
+            delay(1000)
+            notificationManager.notify(26, summaryNotification)
+        }
     }
 
 }

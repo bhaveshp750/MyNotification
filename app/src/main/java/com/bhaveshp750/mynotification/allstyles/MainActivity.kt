@@ -85,6 +85,14 @@ fun MyAppAllStyle() {
         AddButton("Notify ProgressBar") {
             myService.notifyProgressBar()
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Notification Groups") {
+            myService.notifyNotificationGroups()
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Notification Groups") {
+            myService.notifyNotificationManualGrouping()
+        }
     }
 }
 
