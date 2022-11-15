@@ -44,31 +44,42 @@ fun MyAppAllStyle() {
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        EditText(inputValue1, onInputChanged = { inputValue1 = it})
+        EditText(inputValue1, onInputChanged = { inputValue1 = it}, "Enter title")
         Spacer(modifier = Modifier.height(16.dp))
-        EditText(inputValue2, onInputChanged = { inputValue2 = it})
+        EditText(inputValue2, onInputChanged = { inputValue2 = it}, "Enter message")
         Spacer(modifier = Modifier.height(16.dp))
-        AddButton("Send On Channel 1") {
+        AddButton("Notify Normal") {
             myService.sendOnChannel1(inputValue1, inputValue2)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        AddButton("Send On Channel 2") {
+        AddButton("Notify Silent") {
             myService.sendOnChannel2(inputValue1, inputValue2)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify with Toast Button") {
+            myService.notifyWithButton(inputValue1, inputValue2)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Big Text Style") {
+            myService.notifyBigTextStyle(inputValue1, inputValue2)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Inbox Style") {
+            myService.notifyInboxStyle(inputValue1, inputValue2)
         }
     }
 }
 
 @Composable
-fun EditText(textState :String, onInputChanged: (String) -> Unit) {
+fun EditText(textState :String, onInputChanged: (String) -> Unit, label: String) {
     TextField(value = textState,
         onValueChange = onInputChanged,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        label = { Text(text = "Enter title")},
+        label = { Text(text = label)},
 
     )
 }
