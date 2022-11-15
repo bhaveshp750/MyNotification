@@ -16,6 +16,9 @@ import androidx.core.app.RemoteInput
 import com.bhaveshp750.mynotification.CHANNEL_1_ID
 import com.bhaveshp750.mynotification.CHANNEL_2_ID
 import com.bhaveshp750.mynotification.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MyNotificationService(private val context: Context) {
 
@@ -266,6 +269,36 @@ class MyNotificationService(private val context: Context) {
             notification.addAction(replyAction)
 
         notificationManager.notify(10, notification.build())
+    }
+
+    fun notifyProgressBar() {
+        val progressMax = 100
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle("Download [Fake]")
+            .setContentText("Download in progress [Fake]")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setProgress(progressMax, 0, false)
+
+        notificationManager.notify(2, notification.build())
+        GlobalScope.launch {
+            delay(2000)
+            for (i in 0..9){
+                notification.setProgress(progressMax, i*10, false)
+                notificationManager.notify(2, notification.build())
+                delay(1000)
+            }
+
+            notification.setContentText("Download finished")
+                .setOngoing(false)
+                .setProgress(0, 0, false)
+
+            notificationManager.notify(2, notification.build())
+        }
+
     }
 
 }

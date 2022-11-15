@@ -81,6 +81,10 @@ fun MyAppAllStyle() {
         AddButton("Notify Messaging Style") {
             myService.notifyMessagingStyle()
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify ProgressBar") {
+            myService.notifyProgressBar()
+        }
     }
 }
 
