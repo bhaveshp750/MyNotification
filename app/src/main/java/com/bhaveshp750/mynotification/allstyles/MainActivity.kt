@@ -39,8 +39,8 @@ class MainActivity : ComponentActivity() {
 fun MyAppAllStyle() {
     val context = LocalContext.current
     val myService = MyNotificationService(context)
-    var inputValue1 by rememberSaveable { mutableStateOf("") }
-    var inputValue2 by rememberSaveable { mutableStateOf("") }
+    var inputValue1 by rememberSaveable { mutableStateOf("TITLE") }
+    var inputValue2 by rememberSaveable { mutableStateOf("MESSAGE") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -90,8 +90,12 @@ fun MyAppAllStyle() {
             myService.notifyNotificationGroups()
         }
         Spacer(modifier = Modifier.height(16.dp))
-        AddButton("Notify Notification Groups") {
+        AddButton("Notify Manual Groups") {
             myService.notifyNotificationManualGrouping()
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Delete Notification Channel 3") {
+            myService.deleteNotificationChannel()
         }
     }
 }

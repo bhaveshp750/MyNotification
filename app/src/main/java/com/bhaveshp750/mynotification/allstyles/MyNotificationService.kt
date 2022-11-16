@@ -1,30 +1,48 @@
 package com.bhaveshp750.mynotification.allstyles
 
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaMetadata
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.bhaveshp750.mynotification.CHANNEL_1_ID
 import com.bhaveshp750.mynotification.CHANNEL_2_ID
+import com.bhaveshp750.mynotification.CHANNEL_3_ID
 import com.bhaveshp750.mynotification.R
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MyNotificationService(private val context: Context) {
+    private val TAG = "MyNotificationService"
 
     private val notificationManager = NotificationManagerCompat.from(context)
 
     fun sendOnChannel1(title: String, message: String) {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_1_ID)) {
+            openChannelSettings(CHANNEL_1_ID)
+            return
+        }
+
         val notification = NotificationCompat.Builder(context, CHANNEL_1_ID)
             .setSmallIcon(R.drawable.ic_one)
             .setContentTitle(title)
@@ -37,7 +55,17 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun sendOnChannel2(title: String, message: String) {
-        val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_3_ID)) {
+            openChannelSettings(CHANNEL_3_ID)
+            return
+        }
+        val notification = NotificationCompat.Builder(context, CHANNEL_3_ID)
             .setSmallIcon(R.drawable.ic_2)
             .setContentTitle(title)
             .setContentText(message)
@@ -47,6 +75,17 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyWithButton(title: String, message: String) {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_1_ID)) {
+            openChannelSettings(CHANNEL_1_ID)
+            return
+        }
+
         val activityIntent = Intent(context, MainActivity::class.java)
         val contentIntent = PendingIntent.getActivity(
             context,
@@ -79,6 +118,17 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyBigTextStyle(title: String, message: String){
+
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_1_ID)) {
+            openChannelSettings(CHANNEL_1_ID)
+            return
+        }
         val activityIntent = Intent(context, MainActivity::class.java)
         val contentIntent = PendingIntent.getActivity(
             context,
@@ -120,6 +170,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyInboxStyle(title: String, message: String) {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_2_ID)) {
+            openChannelSettings(CHANNEL_2_ID)
+            return
+        }
         val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
             .setSmallIcon(R.drawable.ic_2)
             .setContentTitle(title)
@@ -143,6 +203,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyBigPictureStyle(title: String, message: String){
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_1_ID)) {
+            openChannelSettings(CHANNEL_1_ID)
+            return
+        }
         val activityIntent = Intent(context, MainActivity::class.java)
         val contentIntent = PendingIntent.getActivity(
             context,
@@ -173,6 +243,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyMediaStyle(title: String = "Track 1", message: String = "Song content..") {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_2_ID)) {
+            openChannelSettings(CHANNEL_2_ID)
+            return
+        }
         val mediaSessionCompat  = MediaSessionCompat(context, "MediaNotification")
         mediaSessionCompat.setMetadata(
             MediaMetadataCompat.Builder()
@@ -207,6 +287,16 @@ class MyNotificationService(private val context: Context) {
 
 
     fun notifyMessagingStyle(){
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_1_ID)) {
+            openChannelSettings(CHANNEL_1_ID)
+            return
+        }
         val activityIntent = Intent(context, MainActivity::class.java)
         val contentIntent = PendingIntent.getActivity(
             context,
@@ -223,7 +313,7 @@ class MyNotificationService(private val context: Context) {
         val replyIntent = Intent(context, DirectReplyReceiver::class.java)
 
         var flag = PendingIntent.FLAG_UPDATE_CURRENT
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             flag = PendingIntent.FLAG_MUTABLE
 
         val replyPendingIntent = PendingIntent.getBroadcast(
@@ -272,6 +362,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyProgressBar() {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_2_ID)) {
+            openChannelSettings(CHANNEL_2_ID)
+            return
+        }
         val progressMax = 100
 
         val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
@@ -302,6 +402,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyNotificationGroups() {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_2_ID)) {
+            openChannelSettings(CHANNEL_2_ID)
+            return
+        }
         val notification = NotificationCompat.Builder(context, CHANNEL_2_ID)
             .setSmallIcon(R.drawable.ic_2)
             .setContentTitle("Title")
@@ -321,6 +431,16 @@ class MyNotificationService(private val context: Context) {
     }
 
     fun notifyNotificationManualGrouping() {
+        if(!notificationManager.areNotificationsEnabled()){
+            openNotificationSettings()
+            return
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            isChannelBlocked(CHANNEL_2_ID)) {
+            openChannelSettings(CHANNEL_2_ID)
+            return
+        }
         val title1 = "Title 1"
         val message1 = "Message 1"
         val title2 = "Title 2"
@@ -366,4 +486,46 @@ class MyNotificationService(private val context: Context) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun isChannelBlocked(channelId: String): Boolean {
+        Log.d(TAG, "isChannelBlocked1: $channelId")
+        val channel = notificationManager.getNotificationChannel(channelId) ?: return false
+
+        var bool = channel.importance == NotificationManager.IMPORTANCE_NONE
+        Log.d(TAG, "isChannelBlocked1: $bool")
+
+        val group = notificationManager.getNotificationChannelGroup(channel.group)
+        if(group != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bool = group.isBlocked
+        }
+
+        Log.d(TAG, "isChannelBlocked2: $bool")
+        return bool
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun openChannelSettings(channelId: String){
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+        context.startActivity(intent)
+    }
+
+    private fun openNotificationSettings() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            context.startActivity(intent)
+        }else{
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.data = Uri.parse("package:${context.packageName}")
+            context.startActivity(intent)
+        }
+    }
+
+    fun deleteNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            notificationManager.deleteNotificationChannel(CHANNEL_3_ID)
+        }
+    }
 }
