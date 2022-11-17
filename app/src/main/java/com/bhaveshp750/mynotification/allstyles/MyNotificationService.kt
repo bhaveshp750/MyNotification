@@ -12,23 +12,18 @@ import android.os.Build
 import android.provider.Settings
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
-import com.bhaveshp750.mynotification.CHANNEL_1_ID
-import com.bhaveshp750.mynotification.CHANNEL_2_ID
-import com.bhaveshp750.mynotification.CHANNEL_3_ID
-import com.bhaveshp750.mynotification.R
+import com.bhaveshp750.mynotification.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MyNotificationService(private val context: Context) {
-    private val TAG = "MyNotificationService"
-
     private val notificationManager = NotificationManagerCompat.from(context)
 
     fun sendOnChannel1(title: String, message: String) {
@@ -488,18 +483,15 @@ class MyNotificationService(private val context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun isChannelBlocked(channelId: String): Boolean {
-        Log.d(TAG, "isChannelBlocked1: $channelId")
         val channel = notificationManager.getNotificationChannel(channelId) ?: return false
 
         var bool = channel.importance == NotificationManager.IMPORTANCE_NONE
-        Log.d(TAG, "isChannelBlocked1: $bool")
 
         val group = notificationManager.getNotificationChannelGroup(channel.group)
         if(group != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             bool = group.isBlocked
         }
 
-        Log.d(TAG, "isChannelBlocked2: $bool")
         return bool
     }
 
@@ -527,5 +519,36 @@ class MyNotificationService(private val context: Context) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             notificationManager.deleteNotificationChannel(CHANNEL_3_ID)
         }
+    }
+
+    fun notifyCustomNotification() {
+        val collapsedViews = RemoteViews(context.packageName, R.layout.notificaion_collapsed)
+
+        val expandedView = RemoteViews(context.packageName, R.layout.notificaion_expanded)
+
+        collapsedViews.setTextViewText(R.id.text_view_collapsed_text, "Hello world")
+        expandedView.setImageViewResource(R.id.image_view_expanded, R.drawable.swami_17)
+
+        val intent = Intent(context, NotificationReceiver::class.java)
+        intent.action = "custom_notification"
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        expandedView.setOnClickPendingIntent(R.id.image_view_expanded, pendingIntent)
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_5_ID)
+            .setSmallIcon(R.drawable.ic_assistant)
+            .setContentTitle("Title")
+            .setContentText("This is a default Notification")
+            .setCustomContentView(collapsedViews)
+            .setCustomBigContentView(expandedView)
+//            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .build()
+
+        notificationManager.notify(27, notification)
     }
 }

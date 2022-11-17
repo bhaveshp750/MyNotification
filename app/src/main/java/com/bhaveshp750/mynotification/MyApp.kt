@@ -27,6 +27,8 @@ const val CHANNEL_3_ID = "channel3"
 const val CHANNEL_3_NAME = "Channel 3"
 const val CHANNEL_4_ID = "channel4"
 const val CHANNEL_4_NAME = "Channel 4"
+const val CHANNEL_5_ID = "channel5"
+const val CHANNEL_5_NAME = "Channel 5"
 
 class MyApp : Application() {
 
@@ -111,6 +113,17 @@ class MyApp : Application() {
                 description = "This is Channel 4"
             }
 
+            val channel5 = NotificationChannel(
+                CHANNEL_5_ID,
+                CHANNEL_5_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                lightColor = Color.YELLOW
+                enableLights(true)
+                description = "This is Channel 5"
+            }
+            channel5.group = GROUP_2_ID
+
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
             manager.createNotificationChannel(counterChannel)
@@ -122,6 +135,7 @@ class MyApp : Application() {
             manager.createNotificationChannel(channel2)
             manager.createNotificationChannel(channel3)
             manager.createNotificationChannel(channel4)
+            manager.createNotificationChannel(channel5)
         }
     }
 }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,7 +45,9 @@ fun MyAppAllStyle() {
     var inputValue2 by rememberSaveable { mutableStateOf("MESSAGE") }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EditText(inputValue1, onInputChanged = { inputValue1 = it}, "Enter title")
@@ -97,6 +101,10 @@ fun MyAppAllStyle() {
         AddButton("Delete Notification Channel 3") {
             myService.deleteNotificationChannel()
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        AddButton("Notify Custom Notification") {
+            myService.notifyCustomNotification()
+        }
     }
 }
 
@@ -115,7 +123,10 @@ fun EditText(textState :String, onInputChanged: (String) -> Unit, label: String)
 @Composable
 fun AddButton(name: String, onClick: () -> Unit) {
     Button(onClick = onClick) {
-        Text(text = "$name!")
+        Text(
+            text = "$name!",
+            modifier = Modifier.padding(3.dp)
+        )
     }
 
 }
